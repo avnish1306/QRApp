@@ -91,8 +91,31 @@ module.exports = function(app, passport) {
             }
         })
     })*/
+    app.get('/getQRdetails/:code', (req, res) => {
+            var QRId = req.params.code;
+            console.log(QRId);
+            QRcode.findOne({ "code": QRId }, (err, qrcode) => {
+                if (err) {
 
-    // Events SECTION =========================
+                    console.log(" erroer qr not found");
+                    res.status(200).json({
+                        'success': flase
+                    });
+                } else {
+                    var resObj = {
+                        'email': qrcode.email,
+                        'balance': qrcode.balance,
+                        'history': qrcode.history
+                    }
+                    res.status(200).json({
+                        'success': true,
+                        'qrcode': resObj
+                    });
+                }
+
+            })
+        })
+        // Events SECTION =========================
     app.get('/events', isLoggedIn, function(req, res) {
         console.log(" event user: " + req.user);
         var img1 = req.user.userId.toString();
@@ -100,6 +123,13 @@ module.exports = function(app, passport) {
         res.render('events.ejs', {
             user: req.user,
             img: img1
+        });
+    });
+
+    app.get('/scanner', /*isLoggedIn,*/ function(req, res) {
+        console.log(" event user: " + req.user);
+        res.render('scanner.ejs', {
+            user: req.user
         });
     });
 
@@ -127,7 +157,7 @@ module.exports = function(app, passport) {
 
     // SIGNUP =================================
     // show the signup form
-    // app.get('/signup', function(req, res) {
+    // app.get('/signup', function(req, res) {`
     //     res.render('signup.ejs', { message: req.flash('signupMessage') });
     // });
 

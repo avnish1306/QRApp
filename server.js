@@ -15,6 +15,20 @@ var session = require('express-session');
 var configDB = require('./config/database.js');
 var QRCode = require('qrcode')
 
+var fs = require('fs');
+var https = require('https');
+https.createServer({
+        key: fs.readFileSync('./extra/certificate/server.key'),
+        cert: fs.readFileSync('./extra/certificate/server.crt'),
+        passphrase: 'python',
+        requestCert: false,
+        rejectUnauthorized: false
+
+    }, app)
+    .listen(3000, function() {
+        console.log(" https start");
+    });
+
 QRCode.toDataURL('I am a pony!', function(err, url) {
     //console.log(url)
 })
