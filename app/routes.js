@@ -35,52 +35,58 @@ module.exports = function(app, passport) {
 
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
-        var id = null,
-            email;
-        var idStatus = req.user.idStatus;
-        if (idStatus == false) {
-            if (req.user.google != null) {
-                id = req.user.google.id;
-                email = req.user.google.email;
-            } else if (req.user.facebook != null) {
-                id = req.user.facebook.id;
-                email = req.user.facebook.email;
-            }
-            if (id != null) {
+        var hero = req.user.isHero;
+        if (hero == true) {
+            res.redirect('/adminDashboard');
+        } else {
 
-                var obj = req.user;
-                obj.idStatus = true;
-                obj.userId = id;
-                obj.qrcode = id;
-                obj.save((err, obj) => {
-                    if (err)
-                        console.log(" error in saving " + err);
-                    //console.log("saving " + obj);
-                    var Qr = new QRcode();
-                    Qr.email = email;
-                    Qr.code = id;
-                    Qr.fileName = id + '.png';
-                    Qr.balance = 0;
-                    var curDate = new Date();
-                    var history = { 'date': curDate, 'description': "QR genetared" };
-                    Qr.history.push(history);
+            var id = null,
+                email;
+            var idStatus = req.user.idStatus;
+            if (idStatus == false) {
+                if (req.user.google != null) {
+                    id = req.user.google.id;
+                    email = req.user.google.email;
+                } else if (req.user.facebook != null) {
+                    id = req.user.facebook.id;
+                    email = req.user.facebook.email;
+                }
+                if (id != null) {
 
-                    Qr.save((err, Qr) => {
+                    var obj = req.user;
+                    obj.idStatus = true;
+                    obj.userId = id;
+                    obj.qrcode = id;
+                    obj.save((err, obj) => {
                         if (err)
                             console.log(" error in saving " + err);
-                        run(id).catch(e => { console.log("error in qrcode function") })
+                        //console.log("saving " + obj);
+                        var Qr = new QRcode();
+                        Qr.email = email;
+                        Qr.code = id;
+                        Qr.fileName = id + '.png';
+                        Qr.balance = 0;
+                        var curDate = new Date();
+                        var history = { 'date': curDate, 'description': "QR genetared" };
+                        Qr.history.push(history);
+
+                        Qr.save((err, Qr) => {
+                            if (err)
+                                console.log(" error in saving " + err);
+                            run(id).catch(e => { console.log("error in qrcode function") })
+                        })
+
+
                     })
-
-
-                })
+                }
             }
+
+
+            res.render('profile.ejs', {
+                user: req.user,
+
+            });
         }
-
-
-        res.render('profile.ejs', {
-            user: req.user,
-
-        });
     });
 
     /*app.get('/:img', (req, res) => {
@@ -321,7 +327,12 @@ function isLoggedIn1(req, res, next) {
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
     if (req.user) {
-        //console.log(" islogged in " + req.user);
+        /*if (res.user.isHero == true) {
+            res.redirect('/adminDashboard');
+        } else {
+            next();
+        }*/
+        console.log(" islogged in " + req.user.isHero);
         next();
     } else {
         //console.log(" islogged in else " + req.user);

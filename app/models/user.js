@@ -8,9 +8,22 @@ var userSchema = mongoose.Schema({
         type: String,
         unique: true
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    isHero: {
+        type: Boolean,
+        default: false
+    },
+
     idStatus: {
         type: Boolean,
         default: false
+    },
+    profilePic: {
+        type: String,
+        default: ".../public/images/dummy.png"
     },
     local: {
         email: String,
@@ -36,7 +49,34 @@ var userSchema = mongoose.Schema({
     },
     qrcode: {
         type: String
-    }
+    },
+    name: {
+        type: String,
+        default: " "
+    },
+    college: {
+        type: String,
+        default: " "
+    },
+    city: {
+        type: String,
+        default: ""
+    },
+    age: {
+        type: Number
+    },
+    currentYear: {
+        type: Number
+    },
+    branch: {
+        type: Number
+    },
+    eventParticipated: [{
+        eventName: String,
+        eventCode: String,
+        time: Date,
+        rank: Number
+    }]
 
 });
 
