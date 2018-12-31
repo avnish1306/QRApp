@@ -14,6 +14,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var configDB = require('./config/database.js');
 var QRCode = require('qrcode')
+const _ = require('lodash');
 
 var fs = require('fs');
 var https = require('https');

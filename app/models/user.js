@@ -52,7 +52,7 @@ var userSchema = mongoose.Schema({
     },
     name: {
         type: String,
-        default: " "
+        default: "none"
     },
     college: {
         type: String,
@@ -63,13 +63,20 @@ var userSchema = mongoose.Schema({
         default: ""
     },
     age: {
-        type: Number
+        type: String
     },
     currentYear: {
-        type: Number
+        type: String
     },
-    branch: {
-        type: Number
+    stream: {
+        type: String
+    },
+    mobileNumber: {
+        type: String
+    },
+    gender: {
+        type: String,
+        default: 'NONE'
     },
     eventParticipated: [{
         eventName: String,

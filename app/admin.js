@@ -44,7 +44,7 @@ module.exports = function(app, passport) {
 };
 
 function isHero(req, res, next) {
-    if (req.user.isHero) {
+    if (req.user && req.user.isHero) {
 
         //console.log(" islogged in  state " + req.user);
         next();

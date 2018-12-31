@@ -1,9 +1,12 @@
 module.exports = function(app, passport) {
     var QRcode = require('./models/qrcode');
     var base64image = require('base64-to-image');
-
+    var Events = require('./models/events');
+    var User = require('./models/user');
     var path = './public/';
     const qrcode = require('qrcode');
+    const _ = require('lodash');
+    var Promise = require('promise');
 
 
     async function run(code) {
@@ -18,6 +21,17 @@ module.exports = function(app, passport) {
         } else {
             return false;
         }
+    }
+
+    function checkForUpdate(userId) {
+        User.findOne({ userId: userId }, (err, user) => {
+            if (err) throw err;
+            if (user && user.gender == "NONE") {
+                return true;
+            } else {
+                return false;
+            }
+        })
     }
     app.get('/genQr', (req, res) => {
         run(1234).catch(error => console.log("error"));
@@ -35,7 +49,7 @@ module.exports = function(app, passport) {
     });
 
     //user form route ===============================================================
-    app.get("/user_form",function(req,res){
+    app.get("/user_form", function(req, res) {
         res.render("user_form.ejs");
     })
 
@@ -45,9 +59,9 @@ module.exports = function(app, passport) {
         if (hero == true) {
             res.redirect('/adminDashboard');
         } else {
-
-            var id = null,
-                email;
+            req.user.name = req.user.google.name;
+            var id = req.user.google.id; // need to be updated when facebook login integrated
+            var email = req.user.google.email;
             var idStatus = req.user.idStatus;
             if (idStatus == false) {
                 if (req.user.google != null) {
@@ -81,17 +95,56 @@ module.exports = function(app, passport) {
                                 console.log(" error in saving " + err);
                             run(id).catch(e => { console.log("error in qrcode function") })
                         })
+                        User.findOne({ userId: id }, (err, user) => {
+                            if (err) throw err;
+                            if (user && user.gender == "NONE") {
+                                res.render('user_form.ejs', {
+                                    user: req.user
+                                });
+                            } else {
+                                res.render('profile.ejs', {
+                                    user: req.user
+                                });
+                            }
+                        })
+
+
 
 
                     })
+                } else {
+                    User.findOne({ userId: id }, (err, user) => {
+                        if (err) throw err;
+                        if (user && user.gender == "NONE") {
+                            res.render('user_form.ejs', {
+                                user: req.user
+                            });
+                        } else {
+                            res.render('profile.ejs', {
+                                user: req.user
+                            });
+                        }
+                    })
                 }
+            } else {
+                User.findOne({ userId: id }, (err, user) => {
+                    if (err) throw err;
+                    if (user && user.gender == "NONE") {
+                        res.render('user_form.ejs', {
+                            user: req.user
+                        });
+                    } else {
+                        res.render('profile.ejs', {
+                            user: req.user
+                        });
+                    }
+                })
             }
 
 
-            res.render('profile.ejs', {
-                user: req.user,
 
-            });
+
+
         }
     });
 
@@ -103,6 +156,42 @@ module.exports = function(app, passport) {
             }
         })
     })*/
+    app.get('/checkForUpdate/:userId', (req, res) => {
+        var userId = req.params.userId;
+
+    })
+
+    app.post('/update-user', (req, res, next) => {
+        var userId = req.body.userId;
+        User.findOne({ userId: userId }, (err, user) => {
+            if (err) throw error;
+            if (user && user.gender != "NONE") {
+                res.status(200).json({
+                    'success': 'false',
+                    'msg': 'user already updated'
+                });
+            } else {
+                user.name = req.body.name; // nedd to be correced when implement facebook login
+                user.college = req.body.college;
+                user.city = req.body.city;
+                user.age = req.body.age;
+                user.currentYear = req.body.currentYear;
+                user.stream = req.body.stream;
+                user.mobileNumber = req.body.mobileNumber;
+                user.gender = req.body.gender;
+                console.log("user " + user);
+                user.save((err, newUser) => {
+                    if (err) throw err;
+                    res.status(200).json({
+                        'success': 'true',
+                        'msg': 'user updated',
+                        'user': newUser
+                    });
+                });
+            }
+        })
+
+    })
     app.get('/getQRdetails/:code', (req, res) => {
             var QRId = req.params.code;
             console.log(QRId);
@@ -219,7 +308,7 @@ module.exports = function(app, passport) {
     // the callback after google has authenticated the user
     app.get('/auth/google/callback',
         passport.authenticate('google', {
-            successRedirect: '/user_form',
+            successRedirect: '/profile',
             failureRedirect: '/'
         }));
 
