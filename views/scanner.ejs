@@ -20,6 +20,7 @@
             max-width: 640px;
             margin: 0 auto;
             position: relative;
+}
         }
         
         #githubLink {
@@ -27,6 +28,10 @@
             right: 0;
             top: 12px;
             color: #2D99FF;
+        }
+
+        .card{
+            width: 100% !important;
         }
         
         h1 {
@@ -41,7 +46,8 @@
         }
         
         #canvas {
-            width: 100%;
+            width: 100% !important;
+            height: 50vh !important;
         }
         
         #output {
@@ -59,20 +65,73 @@
         #noQRFound {
             text-align: center;
         }
+        #wrapper {
+     width: 70%;     /* specify a width! */
+        margin: 0 auto; /* center */
+        }
+
+        @media only screen and (max-width: 600px) {
+  #logo {
+    height: 70%;
+    width: 70%;
+  }
+}
+    
     </style>
 </head>
 
 <body>
-    <h1>jsQR Demo</h1>
-    <a id="githubLink " href="https://github.com/cozmo/jsQR ">View documentation on Github</a>
-    <p>Pure JavaScript QR code decoding library.</p>
-    <div id="loadingMessage ">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
-    <video id="video" hidden></video>
-    <canvas id="canvas " hidden></canvas>
-    <div id="output " hidden>
-        <div id="outputMessage ">No QR code detected.</div>
-        <div hidden><b>Data:</b> <span id="outputData "></span></div>
+    <div class="container" id="wrapper">
+        <div class="jumbotron" style="background:transparent">
+            <div class="row">
+                    <div class="col-5">
+                            <img src="images/img-01.jpeg" alt="IMG" width="50" height="50" style="height:100%;width:100%;" id="logo">
+                    </div>
+                    <div class="col-7" id="heading">
+                            <h3>QR scanner Module</h3>
+                    </div>        
+            </div>
+           
+        </div>
+             
+        </div>
+
+         <div class="container">
+                <div class="heading ">
+                        <h4>scanning.....</h4>            
+                    </div>
+                <div class="card" style="width: 18rem;">
+                        <div id="loadingMessage ">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
+                <video id="video" hidden></video>
+                <canvas id="canvas " hidden style="
+                height: 50vh;"></canvas>
+                <div id="output " hidden>
+                    <div id="outputMessage ">No QR code detected.</div>
+                    <div hidden><b>Data:</b> <span id="outputData "></span></div>
+                </div>
+                        <div class="card-footer">
+                          <p class="card-text">Put the Qr inside it</p>
+                        </div>
+                      </div>
+         </div>
+    
+        
+    
+        
+
+
+
     </div>
+
+    
+    
+    
+    <!-- <a id="githubLink " href="https://github.com/cozmo/jsQR ">View documentation on Github</a>
+    <p>Pure JavaScript QR code decoding library.</p> -->
+    
+
+
+
     <script>
         //var video = document.createElement("video ");
         var video = document.getElementById("video");

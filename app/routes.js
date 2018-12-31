@@ -31,7 +31,13 @@ module.exports = function(app, passport) {
     // show the home page (will also have our login links)
     app.get('/', isLoggedIn2, function(req, res) {
         res.render('index.ejs', { messagel: req.flash('loginMessage'), messages: req.flash('signupMessage') });
+
     });
+
+    //user form route ===============================================================
+    app.get("/user_form",function(req,res){
+        res.render("user_form.ejs");
+    })
 
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
@@ -207,7 +213,7 @@ module.exports = function(app, passport) {
     // the callback after google has authenticated the user
     app.get('/auth/google/callback',
         passport.authenticate('google', {
-            successRedirect: '/profile',
+            successRedirect: '/user_form',
             failureRedirect: '/'
         }));
 
