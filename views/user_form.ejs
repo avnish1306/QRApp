@@ -158,11 +158,11 @@ var questions = [
   {question:"What's your college name?"},
   {question:"which year do you study in?"},
   {question:"What's your Phone Number?"},
-]
+];
 
 
 
-;(function(){
+(function(){
 
   var tTime = 100  // transition transform time from #register in ms
   var wTime = 200  // transition width time from #register in ms
@@ -203,10 +203,16 @@ var questions = [
     h1.appendChild(document.createTextNode('Welcome ' + questions[0].value + '!'))
     setTimeout(function() {
       register.parentElement.appendChild(h1)     
-      setTimeout(function() {h1.style.opacity = 1}, 50)
-    }, eTime)
-    
+      setTimeout(function() {
+          h1.style.opacity = 1
+            window.location.href = "/Events";
+        }, 50)      
+    }, eTime, setTimeout(function() {
+            window.location.href = "/Events";
+        }, 50) )       
   }
+
+  
 
   // when submitting the current question
   function validate() {
